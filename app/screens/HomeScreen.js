@@ -26,7 +26,7 @@ class HomeScreen extends React.Component {
 
 function mapStateToProps(state) {
   return {
-   //isLoggedIn: state.session.isLoggedIn
+   isLoggedIn: state.session.isLoggedIn
   };
 }
 

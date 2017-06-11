@@ -13,7 +13,7 @@ class LogInScreen extends React.Component {
   }
 
   handleLogInTapped = () => {
-    //this.props.dispatch(actions.requestSpotifyLogIn());
+    this.props.dispatch(actions.requestSpotifyLogIn());
     // SafariView.isAvailable()
     //   .then(SafariView.show({
     //     url: 'https://accounts.spotify.com/authorize'
