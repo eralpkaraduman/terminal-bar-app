@@ -1,45 +1,51 @@
-import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import React from 'react';
+import { View } from 'react-native';
+import { NativeRouter, Route, Redirect, withRouter } from 'react-router-native';
+import { Provider } from 'react-redux';
+import createLogger from 'redux-logger';
+import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from 'redux';
+import R from 'ramda';
 
-export default class TerminalBar extends Component {
+import reducers from './reducers';
+import styles from './styles';
+import HomeScreen from './screens/HomeScreen';
+import LogInScreen from './screens/LogInScreen';
+
+let loggerMiddleware = createLogger({ // TODO: remove logger
+  level: 'info',
+  colors: {}
+});
+
+const preloadedState = {};
+
+let store = createStore(
+  reducers,
+  preloadedState,
+  applyMiddleware(thunk, loggerMiddleware)
+);
+
+const routeIfLoggedIn = (Component) => () => {
+  const state =  store.getState();
+  const isLoggedIn = R.path(['session', 'isLoggedIn'], state);
+  if (!isLoggedIn) {
+    return <Redirect push to="/login"/>;
+  }
+  Component = withRouter(Component);
+  return <Component/>;
+};
+
+export default class Root extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to Terminal Bar!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-      </View>
+      <Provider store={store}>
+        <NativeRouter>
+          <View style={styles.container}>
+            <Route exact path="/" render={routeIfLoggedIn(HomeScreen)}/>
+            <Route exact path="/login" component={LogInScreen}/>
+          </View>
+        </NativeRouter>
+      </Provider>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
