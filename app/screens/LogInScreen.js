@@ -18,7 +18,8 @@ class LogInScreen extends React.Component {
     // this.props.dispatch(actions.requestSpotifyLogIn());
     SafariView.isAvailable()
       .then(SafariView.show({
-        url: 'https://accounts.spotify.com/authorize?client_id=e55f0a2b96cb4d7689be6812106713cf&response_type=token&redirect_uri=terminal-bar://spotify-authorize-callback&state=STATE&scopes=streaming&show_dialog=true'
+        url: 'https://accounts.spotify.com/authorize?client_id=e55f0a2b96cb4d7689be6812106713cf&response_type=token&redirect_uri=terminal-bar://spotify-authorize-callback&state=STATE&scopes=streaming&show_dialog=true',
+        fromBottom: true
       }))
       .catch(error => {
         // Fallback WebView code for iOS 8 and earlier
