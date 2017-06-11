@@ -1,7 +1,9 @@
-'use_strict';
+import URI from 'urijs';
+
 export const SPOTIFY_LOG_IN_REQUEST = 'SPOTIFY_LOG_IN_REQUEST';
 export const SPOTIFY_LOG_IN_SUCCESS = 'SPOTIFY_LOG_IN_SUCCESS';
 export const SPOTIFY_LOG_IN_FAILURE = 'SPOTIFY_LOG_IN_FAILURE';
+export const SPOTIFY_AUTH_CALLBACK_RECEIVED = 'SPOTIFY_AUTH_CALLBACK_RECEIVED';
 export const CHECK_SESSION = 'CHECK_SESSION';
 
 export function requestSpotifyLogIn() {
@@ -13,16 +15,29 @@ export function requestSpotifyLogIn() {
   };
 }
 
-function receivedSpotifyLogInResponse(json) {
-    if (true) {
-        return {
-            type: SPOTIFY_LOG_IN_SUCCESS,
-            token: 'gfjdfg747fg4k7f'
-        };
-    } else {
-        return {
+function processSpotifyAuthCallback(dispatch, uri) {
+    const fragmentData = uri.search(uri.fragment()).search(true);
+    const {error, access_token, expires_in} = fragmentData;
+    if (error) {
+        return dispatch({
             type: SPOTIFY_LOG_IN_FAILURE,
-            error: 'Failed to log in'
-        };
+            error
+        });
     }
+    else {
+        return dispatch ({
+            type: SPOTIFY_LOG_IN_SUCCESS,
+            access_token,
+            expires_in
+        });
+    }
+}
+
+export function processReceivedLink(linkUrl) {
+    return dispatch => {
+        const uri = URI(linkUrl);
+        if(uri.protocol() == 'terminal-bar' && uri.host() == 'spotify-authorize-callback') {
+            processSpotifyAuthCallback(dispatch, uri);
+        }
+    };
 }

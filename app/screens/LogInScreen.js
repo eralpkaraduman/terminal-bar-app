@@ -1,6 +1,6 @@
 'use_strict';
 import React from 'react';
-import { Text, View, Button, Linking } from 'react-native';
+import { Text, View, Button, /*Linking*/ } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { Redirect } from 'react-router';
@@ -15,7 +15,6 @@ class LogInScreen extends React.Component {
 
   handleLogInTapped = () => {
 
-    // this.props.dispatch(actions.requestSpotifyLogIn());
     SafariView.isAvailable()
       .then(SafariView.show({
         url: 'https://accounts.spotify.com/authorize?client_id=e55f0a2b96cb4d7689be6812106713cf&response_type=token&redirect_uri=terminal-bar://spotify-authorize-callback&state=STATE&scopes=streaming&show_dialog=true',
@@ -26,20 +25,20 @@ class LogInScreen extends React.Component {
       });
   }
 
-  componentDidMount() {
-    Linking.addEventListener('url', this._handleOpenURL);
-  }
+  // componentDidMount() {
+  //   Linking.addEventListener('url', this._handleOpenURL);
+  // }
 
-  componentWillUnmount() {
-    Linking.removeEventListener('url', this._handleOpenURL);
-  }
+  // componentWillUnmount() {
+  //   Linking.removeEventListener('url', this._handleOpenURL);
+  // }
 
-  _handleOpenURL(event) {
-    console.log(event.url);
-    if (true) {
-      SafariView.dismiss();
-    }
-  }
+  // _handleOpenURL(event) {
+  //   console.log(event.url);
+  //   if (true) {
+  //     SafariView.dismiss();
+  //   }
+  // }
 
   render() {
     if (this.props.isLoggedIn) {

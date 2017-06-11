@@ -11,6 +11,8 @@ function sessionReducer(state = initialState, action) {
     switch (action.type) {
     case actions.SPOTIFY_LOG_IN_SUCCESS:
         return spotifyLogInSucceeded(state, action);
+    case actions.SPOTIFY_LOG_IN_FAILURE:
+        return spotifyLogInFailure(state, action);
     case actions.CHECK_SESSION:
         return checkSession(state, action);
     default:
@@ -22,7 +24,19 @@ const spotifyLogInSucceeded = (state, action) => {
     const {token} = action;
     return {
         ...state,
-        spotifyToken: token
+        spotifyToken: action.access_token,
+        spotifyTokenExpiresIn: action.expires_in,
+        spotifyAuthError: null
+    };
+};
+
+const spotifyLogInFailure = (state, action) => {
+    const {token} = action;
+    return {
+        ...state,
+        spotifyToken: null,
+        spotifyTokenExpiresIn: null,
+        spotifyAuthError: action.error
     };
 };
 
@@ -35,6 +49,8 @@ function checkSession(state, action) {
 }
 
 const reducers = combineReducers({
-    session: sessionReducer
+    session: sessionReducer,
+    lastAction: (state = null, action) => action
 });
+
 export default reducers;
