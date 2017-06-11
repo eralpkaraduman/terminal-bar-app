@@ -7,8 +7,6 @@ import { Redirect } from 'react-router';
 import { WebView } from 'react-native';
 import styles from '../styles';
 
-import SafariView from 'react-native-safari-view';
-
 class LogInScreen extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -16,13 +14,13 @@ class LogInScreen extends React.Component {
 
   handleLogInTapped = () => {
     //this.props.dispatch(actions.requestSpotifyLogIn());
-    SafariView.isAvailable()
-      .then(SafariView.show({
-        url: 'https://accounts.spotify.com/authorize'
-      }))
-      .catch(error => {
-        // Fallback WebView code for iOS 8 and earlier
-      });
+    // SafariView.isAvailable()
+    //   .then(SafariView.show({
+    //     url: 'https://accounts.spotify.com/authorize'
+    //   }))
+    //   .catch(error => {
+    //     // Fallback WebView code for iOS 8 and earlier
+    //   });
   }
 
   // https://accounts.spotify.com/authorize
