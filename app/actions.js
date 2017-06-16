@@ -1,6 +1,8 @@
 import URI from 'urijs';
 import SafariView from 'react-native-safari-view';
 
+import config from './config';
+
 export const SPOTIFY_LOG_IN_INITIATED = 'SPOTIFY_LOG_IN_INITIATED';
 export const SPOTIFY_LOG_IN_SUCCESS = 'SPOTIFY_LOG_IN_SUCCESS';
 export const SPOTIFY_LOG_IN_FAILURE = 'SPOTIFY_LOG_IN_FAILURE';
@@ -15,11 +17,22 @@ export function initiateSpotifyLogin() {
     };
 }
 
+function _buildSpotifyLoginURI() {
+    return URI('https://accounts.spotify.com/authorize').addQuery({
+        client_id: config.SPOTIFY_CLIENT_ID,
+        redirect_uri: config.SPOTIFY_REDIRECT_URI,
+        response_type: 'token',
+        show_dialog: 'true',
+        scopes: 'streaming',
+        state: 'STATE'
+    }).toString();
+}
+
 function _launchSpotifyLoginUI() {
     return new Promise((resolve, reject) => {
         SafariView.isAvailable()
             .then(SafariView.show({
-                url: 'https://accounts.spotify.com/authorize?client_id=e55f0a2b96cb4d7689be6812106713cf&response_type=token&redirect_uri=terminal-bar://spotify-authorize-callback&state=STATE&scopes=streaming&show_dialog=true',
+                url: _buildSpotifyLoginURI(),
                 fromBottom: true
             }))
             .then(() => resolve())

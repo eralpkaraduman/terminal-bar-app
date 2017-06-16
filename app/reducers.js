@@ -27,7 +27,7 @@ const spotifyLogInIntitated = (state, action) => {
         ...state,
         spotifyLoginStatus: 'pending'
     };
-}
+};
 
 const spotifyLogInSucceeded = (state, action) => {
     const {access_token, expires_in} = action;

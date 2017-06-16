@@ -4,8 +4,6 @@ import { Text, View, Button, /*Linking*/ } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { Redirect } from 'react-router';
-import { WebView } from 'react-native';
-import styles from '../styles';
 
 class LogInScreen extends React.Component {
   constructor(props, context) {
@@ -52,8 +50,6 @@ function mapStateToProps(state) {
     const splCompleted = splStatus === 'completed';
     const splPending = splStatus === 'pending';
     const splError = (splCompleted || splPending) ? null : splStatus;
-
-    console.log({splStatus});
     return {
         isLoggedIn: state.session.isLoggedIn,
         spotifyLoginError: splError,
