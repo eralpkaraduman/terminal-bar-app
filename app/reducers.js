@@ -25,6 +25,8 @@ function sessionReducer(state = initialState, action) {
 const spotifyLogInIntitated = (state, action) => {
     return {
         ...state,
+        spotifyToken: null,
+        spotifyTokenExpiresIn: null,
         spotifyLoginStatus: 'pending'
     };
 };
@@ -50,7 +52,7 @@ const spotifyLogInFailure = (state, action) => {
 };
 
 function checkSession(state, action) {
-    // TODO: check if session was expired using state.spotifyTokenExpiresIn
+    // TODO: check if spotify session was expired using state.spotifyTokenExpiresIn
     const isLoggedIn = (state.spotifyToken != null && state.spotifyToken !== undefined);
     return {
         ...state,
