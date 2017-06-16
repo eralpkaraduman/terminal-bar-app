@@ -3,12 +3,14 @@ import * as actions from './actions';
 import { combineReducers } from 'redux';
 
 const initialState = {
-    isLoggedIn: undefined,
+    isLoggedIn: undefined, // TODO: rename to sessionIsActive
     spotifyToken: undefined
 };
 
 function sessionReducer(state = initialState, action) {
     switch (action.type) {
+    case actions.SPOTIFY_LOG_IN_INITIATED:
+        return spotifyLogInIntitated(state, action);
     case actions.SPOTIFY_LOG_IN_SUCCESS:
         return spotifyLogInSucceeded(state, action);
     case actions.SPOTIFY_LOG_IN_FAILURE:
@@ -20,13 +22,20 @@ function sessionReducer(state = initialState, action) {
     }
 }
 
+const spotifyLogInIntitated = (state, action) => {
+    return {
+        ...state,
+        spotifyLoginStatus: 'pending'
+    };
+}
+
 const spotifyLogInSucceeded = (state, action) => {
     const {access_token, expires_in} = action;
     return {
         ...state,
         spotifyToken: access_token,
         spotifyTokenExpiresIn: expires_in,
-        spotifyAuthError: null
+        spotifyLoginStatus: 'completed'
     };
 };
 
@@ -36,11 +45,12 @@ const spotifyLogInFailure = (state, action) => {
         ...state,
         spotifyToken: null,
         spotifyTokenExpiresIn: null,
-        spotifyAuthError: error
+        spotifyLoginStatus: error
     };
 };
 
 function checkSession(state, action) {
+    // TODO: check if session was expired using state.spotifyTokenExpiresIn
     const isLoggedIn = (state.spotifyToken != null && state.spotifyToken !== undefined);
     return {
         ...state,

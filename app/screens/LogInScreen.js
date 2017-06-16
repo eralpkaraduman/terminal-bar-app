@@ -6,7 +6,6 @@ import * as actions from '../actions';
 import { Redirect } from 'react-router';
 import { WebView } from 'react-native';
 import styles from '../styles';
-import SafariView from 'react-native-safari-view';
 
 class LogInScreen extends React.Component {
   constructor(props, context) {
@@ -14,31 +13,14 @@ class LogInScreen extends React.Component {
   }
 
   handleLogInTapped = () => {
-
-    SafariView.isAvailable()
-      .then(SafariView.show({
-        url: 'https://accounts.spotify.com/authorize?client_id=e55f0a2b96cb4d7689be6812106713cf&response_type=token&redirect_uri=terminal-bar://spotify-authorize-callback&state=STATE&scopes=streaming&show_dialog=true',
-        fromBottom: true
-      }))
-      .catch(error => {
-        // Fallback WebView code for iOS 8 and earlier
-      });
+    this.props.initiateSpotifyLogin();
   }
 
-  // componentDidMount() {
-  //   Linking.addEventListener('url', this._handleOpenURL);
-  // }
-
-  // componentWillUnmount() {
-  //   Linking.removeEventListener('url', this._handleOpenURL);
-  // }
-
-  // _handleOpenURL(event) {
-  //   console.log(event.url);
-  //   if (true) {
-  //     SafariView.dismiss();
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    if (this.props.spotifyLoginCompleted && !prevProps.spotifyLoginCompleted) {
+        this.props.checkSession();
+    }
+  }
 
   render() {
     if (this.props.isLoggedIn) {
@@ -51,15 +33,40 @@ class LogInScreen extends React.Component {
           title={'Login with Spotify'}
           onPress={this.handleLogInTapped}
         />
+        {this.props.spotifyLoginPending && (
+            <Text>Spotify Login Pending...</Text>
+        )}
+        {this.props.spotifyLoginError && (
+            <Text>{`Spotify Login Error ${this.props.spotifyLoginError}`}</Text>
+        )}
+        {this.props.spotifyLoginCompleted && (
+            <Text>Spotify Login Success</Text>
+        )}
       </View>
     );
   }
 }
 
 function mapStateToProps(state) {
+    const splStatus = state.session.spotifyLoginStatus;
+    const splCompleted = splStatus === 'completed';
+    const splPending = splStatus === 'pending';
+    const splError = (splCompleted || splPending) ? null : splStatus;
+
+    console.log({splStatus});
+    return {
+        isLoggedIn: state.session.isLoggedIn,
+        spotifyLoginError: splError,
+        spotifyLoginCompleted: splCompleted,
+        spotifyLoginPending: splPending,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
   return {
-    isLoggedIn:state.session.isLoggedIn
+    checkSession: () => dispatch({type: actions.CHECK_SESSION}),
+    initiateSpotifyLogin: () => dispatch(actions.initiateSpotifyLogin())
   };
 }
 
-export default connect(mapStateToProps)(LogInScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(LogInScreen);
