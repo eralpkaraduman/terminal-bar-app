@@ -21,22 +21,22 @@ function sessionReducer(state = initialState, action) {
 }
 
 const spotifyLogInSucceeded = (state, action) => {
-    const {token} = action;
+    const {access_token, expires_in} = action;
     return {
         ...state,
-        spotifyToken: action.access_token,
-        spotifyTokenExpiresIn: action.expires_in,
+        spotifyToken: access_token,
+        spotifyTokenExpiresIn: expires_in,
         spotifyAuthError: null
     };
 };
 
 const spotifyLogInFailure = (state, action) => {
-    const {token} = action;
+    const {error} = action;
     return {
         ...state,
         spotifyToken: null,
         spotifyTokenExpiresIn: null,
-        spotifyAuthError: action.error
+        spotifyAuthError: error
     };
 };
 

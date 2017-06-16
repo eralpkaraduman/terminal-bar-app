@@ -20,7 +20,7 @@ let store = createStore(
   applyMiddleware(thunk)
 );
 
-let unsubscribe = store.subscribe(() => {
+store.subscribe(() => {
   const state = store.getState();
   //console.debug(state);
   console.debug(state.lastAction);

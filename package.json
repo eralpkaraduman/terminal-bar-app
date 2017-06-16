@@ -18,9 +18,11 @@
     "urijs": "^1.18.10"
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
     "babel-jest": "20.0.3",
     "babel-preset-react-native": "1.9.2",
     "eslint": "^3.19.0",
+    "eslint-plugin-react": "^7.1.0",
     "jest": "20.0.4",
     "react-test-renderer": "15.4.1"
   },
