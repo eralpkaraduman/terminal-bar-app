@@ -9,16 +9,11 @@ const initialState = {
 
 function sessionReducer(state = initialState, action) {
     switch (action.type) {
-    case actions.SPOTIFY_LOG_IN_INITIATED:
-        return spotifyLogInIntitated(state, action);
-    case actions.SPOTIFY_LOG_IN_SUCCESS:
-        return spotifyLogInSucceeded(state, action);
-    case actions.SPOTIFY_LOG_IN_FAILURE:
-        return spotifyLogInFailure(state, action);
-    case actions.CHECK_SESSION:
-        return checkSession(state, action);
-    default:
-        return state;
+    case actions.SPOTIFY_LOG_IN_INITIATED: return spotifyLogInIntitated(state, action);
+    case actions.SPOTIFY_LOG_IN_SUCCESS: return spotifyLogInSucceeded(state, action);
+    case actions.SPOTIFY_LOG_IN_FAILURE: return spotifyLogInFailure(state, action);
+    case actions.CHECK_SESSION: return checkSession(state, action);
+    default: return state;
     }
 }
 

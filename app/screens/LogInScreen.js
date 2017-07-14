@@ -15,9 +15,6 @@ class LogInScreen extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.spotifyLoginCompleted && !prevProps.spotifyLoginCompleted) {
-        this.props.checkSession();
-    }
   }
 
   render() {
@@ -60,7 +57,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    checkSession: () => dispatch({type: actions.CHECK_SESSION}),
     initiateSpotifyLogin: () => dispatch(actions.initiateSpotifyLogin())
   };
 }

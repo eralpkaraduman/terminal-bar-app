@@ -32,7 +32,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    checkSession: () => dispatch({type: actions.CHECK_SESSION})
+    checkSession: () => dispatch(actions.checkSession())
   };
 }
 

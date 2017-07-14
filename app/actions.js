@@ -52,6 +52,8 @@ let dismissSubscription = SafariView.addEventListener(
 );
 */
 
+export const checkSession = () => ({type: CHECK_SESSION});
+
 function _dismissSpotifyLoginUI() {
     SafariView.isAvailable()
         .then(SafariView.dismiss())
@@ -62,26 +64,29 @@ export function processReceivedLink(linkUrl) {
     return dispatch => {
         const uri = URI(linkUrl);
         if (uri.protocol() === 'terminal-bar' && uri.host() === 'spotify-authorize-callback') {
-            _processSpotifyAuthCallback(dispatch, uri);
+            _dismissSpotifyLoginUI();
+            dispatch(_processSpotifyAuthCallback(uri));
         }
     };
 }
 
-function _processSpotifyAuthCallback(dispatch, uri) {
-    _dismissSpotifyLoginUI();
+function _processSpotifyAuthCallback(uri) {
+  return dispatch => {
     const fragmentData = uri.search(uri.fragment()).search(true);
     const {error, access_token, expires_in} = fragmentData;
     if (error) {
-        dispatch({
-            type: SPOTIFY_LOG_IN_FAILURE,
-            error
-        });
+      dispatch({
+        type: SPOTIFY_LOG_IN_FAILURE,
+        error
+      });
     }
     else {
-        dispatch({
-            type: SPOTIFY_LOG_IN_SUCCESS,
-            access_token,
-            expires_in
-        });
+      dispatch({
+        type: SPOTIFY_LOG_IN_SUCCESS,
+        access_token,
+        expires_in
+      })
     }
+    dispatch(checkSession());
+  }
 }
