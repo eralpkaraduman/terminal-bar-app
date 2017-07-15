@@ -10,11 +10,12 @@ class LogInScreen extends React.Component {
     super(props, context);
   }
 
-  handleLogInTapped = () => {
-    this.props.initiateSpotifyLogin();
+  componentDidMount() {
+    this.props.loadStoredSpotifyCredentials();
   }
 
-  componentDidUpdate(prevProps) {
+  handleLogInTapped = () => {
+    this.props.initiateSpotifyLogin();
   }
 
   render() {
@@ -57,7 +58,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    initiateSpotifyLogin: () => dispatch(actions.initiateSpotifyLogin())
+    initiateSpotifyLogin: () => dispatch(actions.initiateSpotifyLogin()),
+    loadStoredSpotifyCredentials: () => dispatch(actions.loadStoredSpotifyCredentials())
   };
 }
 
