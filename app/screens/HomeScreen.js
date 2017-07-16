@@ -1,8 +1,10 @@
-'use_strict';
 import React from 'react';
 import { Text, View, Button } from 'react-native';
-import { connect } from 'react-redux';
-import * as actions from '../actions';
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router';
+;
+import actions from '../actions';
+import selectors from '../selectors';
 
 class HomeScreen extends React.Component {
   constructor(props, context) {
@@ -10,7 +12,6 @@ class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.props.checkSession();
   }
 
   handleLogOutTapped = () => {
@@ -18,7 +19,7 @@ class HomeScreen extends React.Component {
   }
 
   render() {
-    return (
+    return this.props.isLoggedIn ? (
       <View>
         <Text>Current Scene: Home</Text>
         <Text>{`path: ${this.props.location.pathname}`}</Text>
@@ -28,20 +29,19 @@ class HomeScreen extends React.Component {
           onPress={this.handleLogOutTapped}
         />
       </View>
-    );
+    ) : <Redirect push to="/login"/>
   }
 }
 
 function mapStateToProps(state) {
   return {
-   isLoggedIn: state.session.isLoggedIn // TODO: isLoggedIn: () => this.selectors.isLoggedIn() // TODO: maybe remove checkSession enirely too
+   isLoggedIn: selectors.session.isLoggedIn(state)
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    checkSession: () => dispatch(actions.checkSession()),
-    logOut: () => dispatch(actions.logOut())
+    logOut: () => dispatch(actions.session.logOut())
   };
 }
 

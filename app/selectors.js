@@ -1,5 +1,5 @@
 import session from './session';
 
 export default {
-  session: session.actions
+  session: session.selectors
 }

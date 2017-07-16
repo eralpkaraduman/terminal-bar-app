@@ -1,9 +1,10 @@
-'use_strict';
 import React from 'react';
 import { Text, View, Button, /*Linking*/ } from 'react-native';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
 import { Redirect } from 'react-router';
+
+import actions from '../actions';
+import selectors from '../selectors';
 
 class LogInScreen extends React.Component {
   constructor(props, context) {
@@ -19,11 +20,7 @@ class LogInScreen extends React.Component {
   }
 
   render() {
-    if (this.props.isLoggedIn) {
-      return <Redirect push to="/"/>;
-    }
-
-    return (
+    return !this.props.isLoggedIn ? (
       <View>
         <Button
           title={'Login with Spotify'}
@@ -38,28 +35,25 @@ class LogInScreen extends React.Component {
         {this.props.spotifyLoginCompleted && (
             <Text>Spotify Login Success</Text>
         )}
+        <Text>{`isLoggedIn: ${this.props.isLoggedIn}`}</Text>
       </View>
-    );
+    ) : <Redirect push to="/"/>
   }
 }
 
 function mapStateToProps(state) {
-    const splStatus = state.session.spotifyLoginStatus;
-    const splCompleted = splStatus === 'completed';
-    const splPending = splStatus === 'pending';
-    const splError = (splCompleted || splPending) ? null : splStatus;
-    return {
-        isLoggedIn: state.session.isLoggedIn,
-        spotifyLoginError: splError,
-        spotifyLoginCompleted: splCompleted,
-        spotifyLoginPending: splPending,
-    };
+  return {
+    isLoggedIn: selectors.session.isLoggedIn(state),
+    spotifyLoginPending: selectors.session.isSpotifyLoginPending(state),
+    spotifyLoginCompleted: selectors.session.isSpotifyLoginCompleted(state),
+    spotifyLoginError: selectors.session.spotifyLoginError(state),
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    initiateSpotifyLogin: () => dispatch(actions.initiateSpotifyLogin()),
-    loadStoredSpotifyCredentials: () => dispatch(actions.loadStoredSpotifyCredentials())
+    initiateSpotifyLogin: () => dispatch(actions.session.initiateSpotifyLogin()),
+    loadStoredSpotifyCredentials: () => dispatch(actions.session.loadStoredSpotifyCredentials())
   };
 }
 

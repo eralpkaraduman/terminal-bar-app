@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
   },
 
   screen: {
-
   }
 });
 export default styles;
