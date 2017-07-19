@@ -37,7 +37,7 @@ class LogInScreen extends React.Component {
         )}
         <Text>{`isLoggedIn: ${this.props.isLoggedIn}`}</Text>
       </View>
-    ) : <Redirect push to="/"/>
+    ) : <Redirect push to="/"/>;
   }
 }
 

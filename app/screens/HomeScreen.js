@@ -1,10 +1,13 @@
 import React from 'react';
 import { Text, View, Button } from 'react-native';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-;
+
 import actions from '../actions';
 import selectors from '../selectors';
+import playlists from '../playlists';
+const {PlaylistList} = playlists.components;
+import {CURATOR_SPOTIFY_USER_NAME} from '../config'; // TODO: get this from props instead
 
 class HomeScreen extends React.Component {
   constructor(props, context) {
@@ -12,6 +15,7 @@ class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
+    this.props.fetchPlaylists(CURATOR_SPOTIFY_USER_NAME);
   }
 
   handleLogOutTapped = () => {
@@ -28,8 +32,9 @@ class HomeScreen extends React.Component {
           title={'Log out'}
           onPress={this.handleLogOutTapped}
         />
+        <PlaylistList playlists={[]}/>
       </View>
-    ) : <Redirect push to="/login"/>
+    ) : <Redirect push to="/login"/>;
   }
 }
 
@@ -41,7 +46,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    logOut: () => dispatch(actions.session.logOut())
+    logOut: () => dispatch(actions.session.logOut()),
+    fetchPlaylists: () => dispatch(actions.playlists.fetchPlaylists())
   };
 }
 

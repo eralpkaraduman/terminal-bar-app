@@ -10,11 +10,11 @@ export function initiateSpotifyLogin() {
     return dispatch => {
         dispatch({type: actionTypes.SPOTIFY_LOG_IN_INITIATED});
         _launchSpotifyLoginUI()
-            .catch(error => dispatch({type: actionTypes.actionTypes.SPOTIFY_LOG_IN_FAILURE, error: error}));
+          .catch(error => dispatch({type: actionTypes.actionTypes.SPOTIFY_LOG_IN_FAILURE, error: error}));
     };
 }
 
-// TODO: create & move to manager
+// TODO: move to manager
 ///////////
 function _buildSpotifyLoginURI() {
   return URI('https://accounts.spotify.com/authorize').addQuery({
@@ -39,10 +39,10 @@ function _launchSpotifyLoginUI() {
       });
   });
 }
-_dismissSpotifyLoginUI = () => SafariView.isAvailable()
+const _dismissSpotifyLoginUI = () => SafariView.isAvailable() // TODO: convert to regular function?
   .then(SafariView.dismiss())
   .catch(() => console.log('failed to dismiss safari view'));
-  ///////////
+///////////
 
 // TODO: handle if safariview was dismissed by user, then dispatch failure action
 /*
@@ -57,13 +57,12 @@ let dismissSubscription = SafariView.addEventListener(
 export function logOut() {
   return dispatch => {
     _clearSpotifyCredentials()
-      .then(() => dispatch({type: actionTypes.SPOTIFY_LOG_OUT}))
-      // .then(() => dispatch(checkSession()))
-  }
+      .then(() => dispatch({type: actionTypes.SPOTIFY_LOG_OUT}));
+  };
 }
 
 ///////////////
-// todo move to a manager
+// TODO: move to a manager
 const spotifyStorage = '@SPOTIFY';
 const spotify_access_token_key = `${spotifyStorage}:access_token`;
 const spotify_expires_in_key = `${spotifyStorage}:expires_in`;

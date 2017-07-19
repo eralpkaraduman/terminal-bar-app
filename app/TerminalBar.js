@@ -7,6 +7,9 @@ import { Provider, connect } from 'react-redux';
 import R from 'ramda';
 import URI from 'urijs';
 
+// CURATOR_SPOTIFY_USER_NAME: 'aksakmaksat',
+// SPOTIFY_API_ROOT: 'https://api.spotify.com'
+
 import reducers from './reducers';
 import actions from './actions';
 import selectors from './selectors';
@@ -16,21 +19,79 @@ import LogInScreen from './screens/LogInScreen';
 
 const preloadedState = {};
 
+// TODO: move to a seperate file
+const log = message => console.log(`[SPOTIFY_API_MIDDLEWARE] ${message}`);
+const fetchSpotifyApi = (action, spotifyToken) => {
+  const {path, method, headers, body} = action.spotify_api;
+  action = R.dissoc('spotify_api', action);
+  return dispatch => {
+    const url = `https://api.spotify.com${path}`;
+    log(`Fetching ${url}`);
+    dispatch({
+      ...action,
+      status: 'pending'
+    });
+    return fetch(url, {
+      method,
+      body,
+      headers: {...headers,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${spotifyToken}`
+      },
+    })
+    .then(response => {
+      if (response.ok) {
+        return response;
+      }
+      else {
+        return response.json().then((json => {
+          throw {
+            statusCode: response.status,
+            body: json
+          };
+        }));
+      }
+    })
+    .then((response) => response.json())
+    .then((responseJson) => dispatch({
+      ...action,
+      status: 'success',
+      response: responseJson
+    }))
+    .catch(error => dispatch({
+      ...action,
+      status: 'error',
+      error
+    }));
+  };
+};
+const spotifyApiMiddleware = store => next => action => {
+  const state = store.getState();
+  if (action.spotify_api) {
+    if (selectors.session.isLoggedIn(state)) {
+      const spotifyToken = selectors.session.selectSpotifyToken(state);
+      store.dispatch(fetchSpotifyApi(action, spotifyToken));
+    } else {
+      // TODO: log out & navigate to login screen
+      console.log('TODO: log out & navigate to login screen');
+    }
+  }
+  else {
+    next(action);
+  }
+};
+
 let store = createStore(
   reducers,
   preloadedState,
-  applyMiddleware(thunk)
+  applyMiddleware(thunk, spotifyApiMiddleware)
 );
 
 store.subscribe(() => {
   const state = store.getState();
   //console.debug(state);
   console.debug(state.lastAction);
-
-  const isLoggedIn = selectors.session.isLoggedIn(state);
-  if (!isLoggedIn) {
-    store.dispatch
-  }
 });
 
 // move logic to render func of a Route subclass (AuthRoute ?)
@@ -41,7 +102,7 @@ const routeIfLoggedIn = (Component) => () => {
     return <Redirect push to="/login"/>;
   }
   else {
-    ComponentWithRouter = withRouter(Component);
+    const ComponentWithRouter = withRouter(Component);
     return <ComponentWithRouter/>;
   }
 };

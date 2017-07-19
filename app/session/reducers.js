@@ -1,4 +1,4 @@
-// TODO: use this file only for session reducers
+// TODO: use this file only for session reducers, i think i did?
 import * as actionTypes from './actionTypes';
 
 const initialState = {
