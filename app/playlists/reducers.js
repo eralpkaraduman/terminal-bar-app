@@ -1,3 +1,4 @@
+import R from 'ramda';
 import * as actionTypes from './actionTypes';
 
 const initialState = {
@@ -30,7 +31,11 @@ const reduceFetchPlaylists = (state, action) => {
     return {...state,
       playlistsFetchStatus: status,
       playlistsFetchError: null,
-      playlists: response
+      playlists: response.items.map(playlist => ({
+        id: playlist.id,
+        name: playlist.name,
+        image: R.path(['images', 0, 'url'])
+      }))
     };
   }
   else {

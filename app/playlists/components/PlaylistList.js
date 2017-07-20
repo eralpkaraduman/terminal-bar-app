@@ -17,13 +17,10 @@ class PlaylistList extends Component { // TODO: this component name sucks, but w
   }
 }
 
-PlaylistList.propTypes = {
-  playlists: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
-
 function mapStateToProps(state) {
   return {
-    isLoading: selectors.selectArePlaylistsLoading(state)
+    isLoading: selectors.selectArePlaylistsLoading(state),
+    playlists: selectors.selectPlaylists(state)
   };
 }
 

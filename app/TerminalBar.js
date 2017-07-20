@@ -7,9 +7,6 @@ import { Provider, connect } from 'react-redux';
 import R from 'ramda';
 import URI from 'urijs';
 
-// CURATOR_SPOTIFY_USER_NAME: 'aksakmaksat',
-// SPOTIFY_API_ROOT: 'https://api.spotify.com'
-
 import reducers from './reducers';
 import actions from './actions';
 import selectors from './selectors';
@@ -26,7 +23,8 @@ const fetchSpotifyApi = (action, spotifyToken) => {
   action = R.dissoc('spotify_api', action);
   return dispatch => {
     const url = `https://api.spotify.com${path}`;
-    log(`Fetching ${url}`);
+    log(`Fetching ${method} ${url}`);
+    log(`Token ${spotifyToken}`);
     dispatch({
       ...action,
       status: 'pending'

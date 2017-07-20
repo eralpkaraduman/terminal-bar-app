@@ -16,21 +16,27 @@ export function initiateSpotifyLogin() {
 
 // TODO: move to manager
 ///////////
-function _buildSpotifyLoginURI() {
+function _buildSpotifyLoginUrl() {
   return URI('https://accounts.spotify.com/authorize').addQuery({
     client_id: config.SPOTIFY_CLIENT_ID,
     redirect_uri: config.SPOTIFY_REDIRECT_URI,
     response_type: 'token',
     show_dialog: 'true',
-    scopes: 'streaming',
+    scope: [
+    // 'playlist-read-private',
+    // 'playlist-read-collaborative',
+    'streaming'
+    ].join(' '),
     state: 'STATE'
   }).toString();
 }
 function _launchSpotifyLoginUI() {
   return new Promise((resolve, reject) => {
+    const loginUrl = _buildSpotifyLoginUrl();
+    console.log(loginUrl);
     SafariView.isAvailable()
       .then(SafariView.show({
-        url: _buildSpotifyLoginURI(),
+        url: loginUrl,
         fromBottom: true
       }))
       .then(() => resolve())
