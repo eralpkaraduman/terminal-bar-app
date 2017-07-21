@@ -3,10 +3,10 @@ import { View, Linking } from 'react-native';
 import { NativeRouter, Route, Redirect, withRouter } from 'react-router-native';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { Provider, connect } from 'react-redux';
-import R from 'ramda';
+import { Provider } from 'react-redux';
 import URI from 'urijs';
 
+import spotifyApiMiddleware from './session/spotifyApiMiddleware';
 import reducers from './reducers';
 import actions from './actions';
 import selectors from './selectors';
@@ -15,70 +15,6 @@ import HomeScreen from './screens/HomeScreen';
 import LogInScreen from './screens/LogInScreen';
 
 const preloadedState = {};
-
-// TODO: move to a seperate file
-const log = message => console.log(`[SPOTIFY_API_MIDDLEWARE] ${message}`);
-const fetchSpotifyApi = (action, spotifyToken) => {
-  const {path, method, headers, body} = action.spotify_api;
-  action = R.dissoc('spotify_api', action);
-  return dispatch => {
-    const url = `https://api.spotify.com${path}`;
-    log(`Fetching ${method} ${url}`);
-    log(`Token ${spotifyToken}`);
-    dispatch({
-      ...action,
-      status: 'pending'
-    });
-    return fetch(url, {
-      method,
-      body,
-      headers: {...headers,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${spotifyToken}`
-      },
-    })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      }
-      else {
-        return response.json().then((json => {
-          throw {
-            statusCode: response.status,
-            body: json
-          };
-        }));
-      }
-    })
-    .then((response) => response.json())
-    .then((responseJson) => dispatch({
-      ...action,
-      status: 'success',
-      response: responseJson
-    }))
-    .catch(error => dispatch({
-      ...action,
-      status: 'error',
-      error
-    }));
-  };
-};
-const spotifyApiMiddleware = store => next => action => {
-  const state = store.getState();
-  if (action.spotify_api) {
-    if (selectors.session.isLoggedIn(state)) {
-      const spotifyToken = selectors.session.selectSpotifyToken(state);
-      store.dispatch(fetchSpotifyApi(action, spotifyToken));
-    } else {
-      // TODO: log out & navigate to login screen
-      console.log('TODO: log out & navigate to login screen');
-    }
-  }
-  else {
-    next(action);
-  }
-};
 
 let store = createStore(
   reducers,
