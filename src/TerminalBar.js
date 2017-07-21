@@ -25,7 +25,7 @@ let store = createStore(
 store.subscribe(() => {
   const state = store.getState();
   //console.debug(state);
-  console.debug(state.lastAction);
+  // console.debug(state.lastAction);
 });
 
 // move logic to render func of a Route subclass (AuthRoute ?)
