@@ -1,5 +1,6 @@
 import R from 'ramda';
 import * as selectors from './selectors';
+import * as actions from './actions';
 
 export default function(store) {
   return next => action => {
@@ -9,8 +10,7 @@ export default function(store) {
         const spotifyToken = selectors.selectSpotifyToken(state);
         store.dispatch(fetchSpotifyApi(action, spotifyToken));
       } else {
-        // TODO: log out & navigate to login screen
-        console.log('TODO: log out & navigate to login screen');
+        store.dispatch(actions.logOut());
       }
     }
     else {
@@ -45,13 +45,15 @@ function fetchSpotifyApi(action, spotifyToken) {
       if (response.ok) {
         return response;
       }
+      else if (response.status === 401) {
+        dispatch(actions.logOut());
+      }
       else {
-        return response.json().then((json => {
-          throw {
-            statusCode: response.status,
-            body: json
-          };
-        }));
+        return response.json().then((json => dispatch({
+          ...action,
+          status: 'error',
+          error: {code: response.status, json}
+        })));
       }
     })
     .then((response) => response.json())

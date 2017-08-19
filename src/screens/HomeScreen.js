@@ -7,7 +7,7 @@ import { Redirect } from 'react-router';
 import actions from '../actions';
 import selectors from '../selectors';
 import playlists from '../playlists';
-const {PlaylistList} = playlists.components;
+const {Playlists} = playlists.components;
 
 class HomeScreen extends React.Component {
   constructor(props, context) {
@@ -32,15 +32,15 @@ class HomeScreen extends React.Component {
           title={'Log out'}
           onPress={this.handleLogOutTapped}
         />
-        <PlaylistList/>
+        <Playlists/>
       </View>
-    ) : <Redirect push to="/login"/>;
+    ) : <Redirect push to="/login"/>; // TODO: remove, redux middleware should handle this
   }
 }
 
 function mapStateToProps(state) {
   return {
-   isLoggedIn: selectors.session.isLoggedIn(state)
+   isLoggedIn: selectors.session.isLoggedIn(state) // TODO: remove, redux middleware should handle this
   };
 }
 

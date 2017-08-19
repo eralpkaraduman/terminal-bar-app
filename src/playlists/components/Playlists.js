@@ -7,7 +7,7 @@ import R from 'ramda';
 
 import styles from '/styles';
 
-class PlaylistList extends Component { // TODO: this component name sucks, but what do you call a list of lists tho?
+class Playlists extends Component { // TODO: this component name sucks, but what do you call a list of lists tho?
 
   constructor(props) {
     super(props);
@@ -51,13 +51,13 @@ class PlaylistList extends Component { // TODO: this component name sucks, but w
         {this.props.isLoading && (
           <Text>Loading Playlists...</Text>
         )}
-        {/* <Text>{JSON.stringify(this.props.playlists)}</Text> */}
-        <ListView
+        <Text>{JSON.stringify(this.props.playlists)}</Text>
+        {/* <ListView
           enableEmptySections={true}
           contentContainerStyle={styles.list}
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
-        />
+        /> */}
       </View>
     );
   }
@@ -78,4 +78,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PlaylistList);
+)(Playlists);
