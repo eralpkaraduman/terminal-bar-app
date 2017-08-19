@@ -32,8 +32,8 @@ const spotifyLogInSucceeded = (state, action) => {
         ...state,
         spotifyLoginStatus: 'completed',
         spotifyToken: access_token,
-        spotifyTokenExpiresIn: expires_in,
-        spotifyTokenDateReceived: date_received
+        spotifyTokenExpiresIn: parseInt(expires_in),
+        spotifyTokenDateReceived: parseInt(date_received)
     };
 };
 
@@ -49,8 +49,8 @@ const spotifyStoredCredentialsLoaded = (state, action) => {
   const {access_token, expires_in, date_received} = action;
   return {...state,
     spotifyToken: access_token,
-    spotifyTokenExpiresIn: expires_in,
-    spotifyTokenDateReceived: date_received
+    spotifyTokenExpiresIn: parseInt(expires_in),
+    spotifyTokenDateReceived: parseInt(date_received)
   }
 }
 
