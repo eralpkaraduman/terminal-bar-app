@@ -24,6 +24,7 @@ function _buildSpotifyLoginUrl() {
     show_dialog: 'true',
     scope: [
       'user-read-playback-state',
+      'user-modify-playback-state',
     // 'playlist-read-private',
     // 'playlist-read-collaborative',
       'streaming'

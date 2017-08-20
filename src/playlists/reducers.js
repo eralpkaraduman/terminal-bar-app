@@ -33,7 +33,8 @@ const reduceFetchPlaylists = (state, action) => {
     return {...state,
       playlistsFetchStatus: null,
       playlists: response.items.map(playlist => ({
-        id: playlist.id,
+        // id: playlist.id,
+        uri: playlist.uri,
         name: playlist.name,
         image: R.path(['images', 0, 'url'], playlist)
       }))

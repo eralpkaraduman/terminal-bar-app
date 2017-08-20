@@ -31,17 +31,35 @@ class HomeScreen extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.selectedPlaylist &&
+      this.state.selectedPlaylist !== prevState.selectedPlaylist
+    ) {
+      if (this.state.selectedDevice) {
+        this.props.play(
+          this.state.selectedPlaylist.uri,
+          this.state.selectedDevice.id
+        );
+      } else {
+        console.log('TODO: else');
+      }
+    }
+  }
+  
+
   handleLogOutTapped = () => {
     this.props.logOut();
   }
 
   handlePlaylistSelected = playlistData => {
-    this.setState(() => ({
-      selectedPlaylist: playlistData
-    }));
-    
     if (!this.state.selectedDevice) {
       console.log('TODO: show devices screen');
+    }
+    else {
+      this.setState(() => ({
+        selectedPlaylist: playlistData
+      }));
     }
   }
 
@@ -78,7 +96,10 @@ function mapDispatchToProps(dispatch) {
   return {
     logOut: () => dispatch(actions.session.logOut()),
     fetchPlaylists: user => dispatch(actions.playlists.fetchPlaylists(user)),
-    fetchDevices: () => dispatch(actions.playlists.fetchDevices())
+    fetchDevices: () => dispatch(actions.playlists.fetchDevices()),
+    play: (contextUri, deviceId) => dispatch(
+      actions.playlists.play(contextUri, deviceId)
+    )
   };
 }
 

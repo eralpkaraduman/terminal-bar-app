@@ -19,3 +19,16 @@ export function fetchDevices() {
     }
   };
 }
+
+export function play(contextUri, deviceId) {
+  return {
+    type: actionTypes.PLAY,
+    spotify_api: {
+      path: `/v1/me/player/play?device_id=${deviceId}`,
+      body: {
+        context_uri: contextUri
+      },
+      method: 'PUT'
+    }
+  };
+}

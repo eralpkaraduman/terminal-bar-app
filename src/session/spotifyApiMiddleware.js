@@ -19,7 +19,8 @@ export default function(store) {
   };
 }
 
-const log = message => console.log(`[SPOTIFY_API_MIDDLEWARE] ${message}`);
+const tag = '[SPOTIFY_API_MIDDLEWARE]';
+const log = message => console.log(`${tag} ${message}`);
 
 function fetchSpotifyApi(action, spotifyToken) {
   const {path, method, headers, body} = action.spotify_api;
@@ -32,9 +33,20 @@ function fetchSpotifyApi(action, spotifyToken) {
       ...action,
       status: 'pending'
     });
+
+    let jsonBody = null;
+    if (body) {
+      try {
+        jsonBody = JSON.stringify(body);
+      }
+      catch (e) {
+        throw `${tag} Couldnt encode json: ${e}`;
+      }
+    }
+
     return fetch(url, {
       method,
-      body,
+      body: jsonBody,
       headers: {...headers,
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -63,10 +75,13 @@ function fetchSpotifyApi(action, spotifyToken) {
       status: 'success',
       response: responseJson
     }))
-    .catch(error => dispatch({
-      ...action,
-      status: 'error',
-      error
-    }));
+    .catch(error => {
+      log(`Error ${method} ${url}: ${error}`);
+      dispatch({
+        ...action,
+        status: 'error',
+        error
+      });
+    });
   };
 }
