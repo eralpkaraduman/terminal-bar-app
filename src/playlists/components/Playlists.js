@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, ListView, Image, Dimensions } from 'react-native';
+import { Text, View, Button, ListView, Image, StyleSheet, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as selectors from '../selectors';
@@ -17,7 +17,9 @@ class Playlists extends Component {
       }
     });
     this.state = {
-      dataSource: dataSource.cloneWithRows(this.props.playlists)
+      dataSource: dataSource.cloneWithRows(this.props.playlists),
+      listInset: StyleSheet.flatten(styles.listItem).padding,
+      listBackgroundColor: StyleSheet.flatten(styles.playlists).backgroundColor,
     };
   }
 
@@ -29,20 +31,24 @@ class Playlists extends Component {
       }));
     }
   }
-  
-  // {height: Dimensions.get('screen').width}
-  renderRow = rowData => (
-    <View style={[
-      styles.listItem, {aspectRatio: 1}
-    ]}>
-      <Image
-        source={{uri: rowData.image}}
-        style={{
-          flex: 1,
-          width: undefined, height: undefined
-        }}
-      />
-    </View>
+
+  handlePlaylistSelected(data) {
+    console.log(data);
+  }
+
+  renderRow = (rowData) => (
+    <TouchableHighlight
+      underlayColor={this.state.listBackgroundColor}
+      activeOpacity={0.3}
+      onPress={() => this.handlePlaylistSelected(rowData)}
+    >
+      <View style={styles.listItem}>
+        <Image
+          source={{uri: rowData.image}}
+          style={styles.listItemImage}
+        />
+      </View>
+    </TouchableHighlight>
   );
 
   render() {
@@ -54,6 +60,8 @@ class Playlists extends Component {
         <ListView
           enableEmptySections={true}
           dataSource={this.state.dataSource}
+          contentInset={{top: this.state.listInset}}
+          contentOffset={{y: -this.state.listInset}}
           renderRow={this.renderRow}
         />
       </View>
