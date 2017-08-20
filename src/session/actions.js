@@ -33,7 +33,6 @@ function _buildSpotifyLoginUrl() {
 function _launchSpotifyLoginUI() {
   return new Promise((resolve, reject) => {
     const loginUrl = _buildSpotifyLoginUrl();
-    console.log(loginUrl);
     SafariView.isAvailable()
       .then(SafariView.show({
         url: loginUrl,

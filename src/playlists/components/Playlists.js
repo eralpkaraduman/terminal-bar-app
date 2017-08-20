@@ -20,7 +20,7 @@ class Playlists extends Component { // TODO: this component name sucks, but what
       dataSource: dataSource.cloneWithRows(this.props.playlists)
     };
 
-    console.debug(styles);
+    // console.debug(styles);
   }
 
   componentWillReceiveProps(nextProps) {

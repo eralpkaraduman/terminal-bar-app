@@ -38,7 +38,4 @@ const reduceFetchPlaylists = (state, action) => {
       }))
     };
   }
-  else {
-    console.debug(action);
-  }
 };

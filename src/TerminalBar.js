@@ -22,11 +22,11 @@ let store = createStore(
   applyMiddleware(thunk, spotifyApiMiddleware)
 );
 
-store.subscribe(() => {
-  const state = store.getState();
-  //console.debug(state);
-  // console.debug(state.lastAction);
-});
+// store.subscribe(() => {
+//   const state = store.getState();
+//   console.debug(state);
+//   console.debug(state.lastAction);
+// });
 
 // move logic to render func of a Route subclass (AuthRoute ?)
 const routeIfLoggedIn = (Component) => () => {
