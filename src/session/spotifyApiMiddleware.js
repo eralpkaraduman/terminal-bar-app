@@ -27,7 +27,7 @@ function fetchSpotifyApi(action, spotifyToken) {
   return dispatch => {
     const url = `https://api.spotify.com${path}`;
     log(`Fetching ${method} ${url}`);
-    log(`Token ${spotifyToken}`);
+    // log(`Token ${spotifyToken}`);
     dispatch({
       ...action,
       status: 'pending'

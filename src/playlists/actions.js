@@ -9,3 +9,13 @@ export function fetchPlaylists(spotifyUser) {
     }
   };
 }
+
+export function fetchDevices() {
+  return {
+    type: actionTypes.FETCH_DEVICES,
+    spotify_api: {
+      path: '/v1/me/player/devices',
+      method: 'GET'
+    }
+  };
+}

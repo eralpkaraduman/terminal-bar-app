@@ -23,9 +23,10 @@ function _buildSpotifyLoginUrl() {
     response_type: 'token',
     show_dialog: 'true',
     scope: [
+      'user-read-playback-state',
     // 'playlist-read-private',
     // 'playlist-read-collaborative',
-    'streaming'
+      'streaming'
     ].join(' '),
     state: 'STATE'
   }).toString();

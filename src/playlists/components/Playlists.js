@@ -9,6 +9,10 @@ import styles from '/styles';
 
 class Playlists extends Component {
 
+  static propTypes = {
+    onPlaylistSelected: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
     const dataSource = new ListView.DataSource({
@@ -32,19 +36,19 @@ class Playlists extends Component {
     }
   }
 
-  handlePlaylistSelected(data) {
-    console.log(data);
+  handlePlaylistSelected(playlistData) {
+    this.props.onPlaylistSelected(playlistData);
   }
 
-  renderRow = (rowData) => (
+  renderRow = (playlistData) => (
     <TouchableHighlight
       underlayColor={this.state.listBackgroundColor}
       activeOpacity={0.3}
-      onPress={() => this.handlePlaylistSelected(rowData)}
+      onPress={() => this.handlePlaylistSelected(playlistData)}
     >
       <View style={styles.listItem}>
         <Image
-          source={{uri: rowData.image}}
+          source={{uri: playlistData.image}}
           style={styles.listItemImage}
         />
       </View>

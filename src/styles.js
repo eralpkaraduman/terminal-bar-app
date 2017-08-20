@@ -13,6 +13,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
 
+  modal: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    paddingTop: 20
+  },
+
   playlists: {
     flex: 1,
     flexDirection: 'column',
