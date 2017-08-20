@@ -21,7 +21,7 @@ export const selectToken = state => state[NAME_SPACE].spotifyToken;
 export const selectTokenExpiresAt = state => {
   const expiresIn = state[NAME_SPACE].spotifyTokenExpiresIn;
   const dateReceived = state[NAME_SPACE].spotifyTokenDateReceived;
-  return dateReceived + expiresIn * 1000;
+  return dateReceived + (expiresIn * 1000);
 }
 
 export const spotifyLoginStatus = state =>

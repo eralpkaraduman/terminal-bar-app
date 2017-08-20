@@ -2,24 +2,27 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 25,
-    padding: 10,
+    flex: 1,
+    flexDirection: 'column',
+    paddingTop: 20
   },
 
   screen: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'white'
   },
 
-  list: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap'
+  playlists: {
+    flex: 1,
+    flexDirection: 'column'
   },
 
   listItem: {
-    backgroundColor: '#CCC',
-    margin: 10,
-    width: 100,
-    height: 100
+    flex: 1,
+    flexDirection: 'column',
+    aspectRatio: 1,
+    backgroundColor: 'black'
   }
 });
 export default styles;

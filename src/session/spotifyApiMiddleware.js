@@ -42,6 +42,7 @@ function fetchSpotifyApi(action, spotifyToken) {
       },
     })
     .then(response => {
+      log(`Response ${response.status}: ${method} ${url}`);
       if (response.ok) {
         return response;
       }

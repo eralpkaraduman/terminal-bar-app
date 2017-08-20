@@ -8,6 +8,7 @@ import actions from '../actions';
 import selectors from '../selectors';
 import playlists from '../playlists';
 const {Playlists} = playlists.components;
+import styles from '/styles';
 
 class HomeScreen extends React.Component {
   constructor(props, context) {
@@ -24,7 +25,7 @@ class HomeScreen extends React.Component {
 
   render() {
     return this.props.isLoggedIn ? (
-      <View>
+      <View style={styles.screen}>
         <Text>Current Scene: Home</Text>
         <Text>{`path: ${this.props.location.pathname}`}</Text>
         <Text>{`Logged In: ${this.props.isLoggedIn}`}</Text>

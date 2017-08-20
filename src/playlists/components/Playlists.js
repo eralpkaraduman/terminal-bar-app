@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, ListView, Image } from 'react-native';
+import { Text, View, Button, ListView, Image, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as selectors from '../selectors';
@@ -7,7 +7,7 @@ import R from 'ramda';
 
 import styles from '/styles';
 
-class Playlists extends Component { // TODO: this component name sucks, but what do you call a list of lists tho?
+class Playlists extends Component {
 
   constructor(props) {
     super(props);
@@ -19,45 +19,43 @@ class Playlists extends Component { // TODO: this component name sucks, but what
     this.state = {
       dataSource: dataSource.cloneWithRows(this.props.playlists)
     };
-
-    // console.debug(styles);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!R.eqProps('playlists', nextProps, this.props)) {
+    const {playlists} = nextProps;
+    if (playlists && !R.eqProps('playlists', nextProps, this.props)) {
       this.setState(prevState => ({
-        dataSource: prevState.dataSource.cloneWithRows(nextProps.playlists)
+        dataSource: prevState.dataSource.cloneWithRows(playlists)
       }));
     }
   }
-
+  
+  // {height: Dimensions.get('screen').width}
   renderRow = rowData => (
-    <View style={{flex: 1}}>
-      {/* <View style={{flex: 1, backgroundColor: 'powderblue'}}>
-        <Image
-          source={{uri: rowData.image}}
-          style={{
-            flex: 1,
-            width: undefined, height: undefined
-          }}
-        />
-      </View> */}
+    <View style={[
+      styles.listItem, {aspectRatio: 1}
+    ]}>
+      <Image
+        source={{uri: rowData.image}}
+        style={{
+          flex: 1,
+          width: undefined, height: undefined
+        }}
+      />
     </View>
   );
 
   render() {
     return (
-      <View>
+      <View style={styles.playlists}>
         {this.props.isLoading && (
           <Text>Loading Playlists...</Text>
         )}
-        <Text>{JSON.stringify(this.props.playlists)}</Text>
-        {/* <ListView
+        <ListView
           enableEmptySections={true}
-          contentContainerStyle={styles.list}
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
-        /> */}
+        />
       </View>
     );
   }
