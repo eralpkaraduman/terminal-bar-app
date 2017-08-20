@@ -74,23 +74,29 @@ const spotify_access_token_key = `${spotifyStorage}:access_token`;
 const spotify_expires_in_key = `${spotifyStorage}:expires_in`;
 const spotify_date_received_key = `${spotifyStorage}:date_received`;
 function _storeSpotifyCredentials(credentials) {
+  credentials = {...credentials, expires_in: credentials.expires_in.toString()};
+  credentials = {...credentials, date_received: credentials.date_received.toString()};
   const {access_token, expires_in, date_received} = credentials;
   return Promise.all([
     AsyncStorage.setItem(spotify_access_token_key, access_token),
     AsyncStorage.setItem(spotify_expires_in_key, expires_in),
     AsyncStorage.setItem(spotify_date_received_key, date_received),
-  ]);
+  ])
+  .then(() => _readSpotifyCredentials());
 }
 function _readSpotifyCredentials() {
   return Promise.all([
     AsyncStorage.getItem(spotify_access_token_key),
     AsyncStorage.getItem(spotify_expires_in_key),
     AsyncStorage.getItem(spotify_date_received_key)
-  ]).then(R.zipObj([
+  ])
+  .then(R.zipObj([
     'access_token',
     'expires_in',
     'date_received'
-  ]));
+  ]))
+  .then(credentials => ({...credentials, expires_in: parseInt(credentials.expires_in)}))
+  .then(credentials => ({...credentials, date_received: parseInt(credentials.date_received)}));
 }
 function _clearSpotifyCredentials() {
   return Promise.all([
@@ -104,25 +110,28 @@ function _clearSpotifyCredentials() {
 export function loadStoredSpotifyCredentials() {
   return dispatch => {
     _readSpotifyCredentials()
-      .then(({access_token, expires_in, date_received}) => dispatch({
-        type: actionTypes.SPOTIFY_STORED_CREDENTIALS_LOADED,
-        access_token,
-        expires_in,
-        date_received
-      }))
-      .catch(error => console.error(error));
-  }
+    .then(({access_token, expires_in, date_received}) => dispatch({
+      type: actionTypes.SPOTIFY_STORED_CREDENTIALS_LOADED,
+      access_token,
+      expires_in,
+      date_received
+    }))
+    .catch(error => console.error(error));
+  };
 }
 
 function _onSpotifyLoginSuccess(fragmentData) {
-  const {access_token, expires_in} = fragmentData;
-  const date_received = Date.now().toString();
-  _storeSpotifyCredentials({access_token, expires_in, date_received});
-  return {
-    type: actionTypes.SPOTIFY_LOG_IN_SUCCESS,
-    access_token,
-    expires_in,
-    date_received
+  return dispatch => {
+    _storeSpotifyCredentials({
+      access_token: fragmentData.access_token,
+      expires_in: fragmentData.expires_in,
+      date_received: new Date().getTime()
+    })
+    .then((credentials => dispatch({
+      ...credentials,
+      type: actionTypes.SPOTIFY_LOG_IN_SUCCESS
+    })))
+    .catch(error => console.error(error));
   }
 }
 
@@ -130,7 +139,7 @@ function _onSpotifyLoginFailure(fragmentData) {
   return {
     type: actionTypes.SPOTIFY_LOG_IN_FAILURE,
     error: fragmentData.error
-  }
+  };
 }
 
 export function handleSpotifyAuthCallback(uri) {

@@ -7,7 +7,7 @@ export default function(store) {
     const state = store.getState();
     if (action.spotify_api) {
       if (selectors.isLoggedIn(state)) {
-        const spotifyToken = selectors.selectSpotifyToken(state);
+        const spotifyToken = selectors.selectToken(state);
         store.dispatch(fetchSpotifyApi(action, spotifyToken));
       } else {
         store.dispatch(actions.logOut());

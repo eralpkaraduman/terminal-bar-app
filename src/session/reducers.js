@@ -29,19 +29,19 @@ const spotifyLogInIntitated = (state, action) => {
 const spotifyLogInSucceeded = (state, action) => {
     const {access_token, expires_in, date_received} = action;
     return {
-        ...state,
-        spotifyLoginStatus: 'completed',
-        spotifyToken: access_token,
-        spotifyTokenExpiresIn: parseInt(expires_in),
-        spotifyTokenDateReceived: parseInt(date_received)
+      ...state,
+      spotifyLoginStatus: 'completed',
+      spotifyToken: access_token,
+      spotifyTokenExpiresIn: expires_in,
+      spotifyTokenDateReceived: date_received
     };
 };
 
 const spotifyLogInFailure = (state, action) => {
     const {error} = action;
     return {
-        ...state,
-        spotifyLoginStatus: error
+      ...state,
+      spotifyLoginStatus: error
     };
 };
 
@@ -49,8 +49,8 @@ const spotifyStoredCredentialsLoaded = (state, action) => {
   const {access_token, expires_in, date_received} = action;
   return {...state,
     spotifyToken: access_token,
-    spotifyTokenExpiresIn: parseInt(expires_in),
-    spotifyTokenDateReceived: parseInt(date_received)
+    spotifyTokenExpiresIn: expires_in,
+    spotifyTokenDateReceived: date_received
   }
 }
 

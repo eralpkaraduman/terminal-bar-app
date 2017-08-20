@@ -3,23 +3,26 @@ import R from 'ramda';
 import {NAME_SPACE} from './constants';
 
 export const isLoggedIn = state => {
-  const token = selectSpotifyToken(state);
+  const token = selectToken(state);
   if (R.isNil(token)) {
     return false;
   }
-  const expiresIn = state[NAME_SPACE].spotifyTokenExpiresIn;
-  const dateReceived = state[NAME_SPACE].spotifyTokenDateReceived;
   const now = new Date().getTime();
-  const tokenExpired = now < (dateReceived + expiresIn);
+  const tokenExpiresAt = selectTokenExpiresAt(state);
+  const tokenExpired = now >= tokenExpiresAt;
   if (tokenExpired) {
     return false;
   }
-  else {
-    return true;
-  }
+  
+  return true;
 };
 
-export const selectSpotifyToken = state => state[NAME_SPACE].spotifyToken;
+export const selectToken = state => state[NAME_SPACE].spotifyToken;
+export const selectTokenExpiresAt = state => {
+  const expiresIn = state[NAME_SPACE].spotifyTokenExpiresIn;
+  const dateReceived = state[NAME_SPACE].spotifyTokenDateReceived;
+  return dateReceived + expiresIn * 1000;
+}
 
 export const spotifyLoginStatus = state =>
   state[NAME_SPACE].spotifyLoginStatus;
