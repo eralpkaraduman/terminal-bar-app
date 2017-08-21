@@ -1,8 +1,8 @@
 ## Install Dependencies 💿
 
-install latest non beta XCode
-install command line tools
-install node ( & npm )
+install latest non beta XCode  
+install command line tools  
+install node ( & npm )  
 `sudo npm install -g react-native-cli`  
 cd into project folder  
 `npm install`  
