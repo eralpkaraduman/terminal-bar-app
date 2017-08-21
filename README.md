@@ -12,6 +12,6 @@ cd into project folder
 
 ## Run 🏃  
 `open ./ios/TerminalBar.xcodeproj -a Xcode`  
-Set iOS scheme to 'Release' if you want to use if you want it to use it withour development packager [(instructions here)](https://facebook.github.io/react-native/docs/running-on-device.html#2-configure-release-scheme)  
+Set iOS scheme to 'Release' if you want to use it without development packager [(instructions here)](https://facebook.github.io/react-native/docs/running-on-device.html#2-configure-release-scheme)  
 select target 'Terminal Bar' & set device as any simulator
 cmd+R  
