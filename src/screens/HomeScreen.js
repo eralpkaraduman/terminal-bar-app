@@ -73,13 +73,27 @@ class HomeScreen extends React.Component {
   render() {
     return this.props.isLoggedIn ? (
       <View style={styles.screen}>
-        <Text>Current Scene: Home</Text>
-        <Text>{`path: ${this.props.location.pathname}`}</Text>
-        <Text>{`Logged In: ${this.props.isLoggedIn}`}</Text>
-        <Button
-          title={'Log out'}
-          onPress={this.handleLogOutTapped}
-        />
+        
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <View style={{flexDirection: 'column', padding: 4}}>
+            <Text>Current Scene: Home</Text>
+            <Text>{`path: ${this.props.location.pathname}`}</Text>
+            <Text>{`Logged In: ${this.props.isLoggedIn}`}</Text>
+          </View>
+
+          <View style={{flexDirection: 'column'}}>
+            <Button
+              title={'Log out'}
+              onPress={this.handleLogOutTapped}
+            />
+          </View>
+
+        </View>
+
         <Playlists
           onPlaylistSelected={this.handlePlaylistSelected}
         />
