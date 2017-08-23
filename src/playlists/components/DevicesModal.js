@@ -74,7 +74,7 @@ class DevicesModal extends Component {
     >
       <View style={styles.deviceListItem}>
         <Text>{deviceData.name}</Text>
-        {deviceData.id === this.props.selectedDevice.id &&
+        {this.props.selectedDevice && deviceData.id === this.props.selectedDevice.id &&
           <Text style={styles.deviceListItemCheckmark}>✅</Text>
         }
       </View>
@@ -94,6 +94,14 @@ class DevicesModal extends Component {
         onRequestClose={() => {alert('Modal has been closed.');}}
       >
         <View style={styles.modal}>
+          <Text style={{
+            textAlign: 'center',
+            margin: 20,
+            fontSize: 24,
+            fontWeight: 'bold'
+          }}>
+            Select Device
+          </Text>
           <ListView
             enableEmptySections={true}
             dataSource={this.state.dataSource}

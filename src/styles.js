@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: 'white',
-    paddingTop: 20
+    paddingTop: 20,
+    paddingBottom: 40
   },
 
   playlists: {
