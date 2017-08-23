@@ -63,6 +63,13 @@ class HomeScreen extends React.Component {
     }
   }
 
+  handleDevicesModalChangedDevice = device => {
+    // console.log(device);
+    this.setState(() => ({
+      selectedDevice: device
+    }));
+  }
+
   render() {
     return this.props.isLoggedIn ? (
       <View style={styles.screen}>
@@ -79,6 +86,7 @@ class HomeScreen extends React.Component {
         <DevicesModal
           onFetchDevices={this.props.fetchDevices}
           selectedDevice={this.state.selectedDevice}
+          onChangedDevice={this.handleDevicesModalChangedDevice}
         />
       </View>
     ) : <Redirect push to="/login"/>; // TODO: remove, redux middleware should handle this

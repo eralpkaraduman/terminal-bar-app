@@ -1,29 +1,56 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Modal, Text, TouchableHighlight, View, Button } from 'react-native';
+import { Modal, Text, TouchableHighlight, View, Button, ListView } from 'react-native';
+import R from 'ramda';
+
 import * as actions from '../actions';
 import * as selectors from '../selectors';
-
 import styles from '/styles';
 
 class DevicesModal extends Component {
   static propTypes = {
     onFetchDevices: PropTypes.func.isRequired,
-    selectedDevice: PropTypes.object
+    selectedDevice: PropTypes.object,
+    onChangedDevice: PropTypes.func.isRequired
   };
 
   constructor(props, context) {
     super(props, context);
+    const dataSource = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => true//(r1 !== r2)
+    });
     this.state = {
-      open: false
+      open: false,
+      dataSource: dataSource.cloneWithRows(this.props.devices),
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const selectedDeviceChanged =
+      !R.eqProps('selectedDevice', nextProps, this.props);
+
+    const deviceListChanged =
+      (nextProps.devices && !R.eqProps('devices', nextProps, this.props));
+
+    if (selectedDeviceChanged || deviceListChanged) {
+      this.updateListView(nextProps.devices);
+    }
+  }
+
+  updateListView = devices => {
+    console.log('updateListView');
+    this.setState(prevState => ({
+      dataSource: prevState.dataSource.cloneWithRows(devices)
+    }));
   }
 
   handleClose = () => this.setState(() => ({open: false}));
   handleOpen = () => {
     this.props.onFetchDevices();
-    this.setState(() => ({open: true}));
+    this.setState(() => ({
+      open: true
+    }));
   };
 
   getTitle = () => {
@@ -35,6 +62,29 @@ class DevicesModal extends Component {
     }
   }
 
+  handleDeviceSelected(deviceData) {
+    this.props.onChangedDevice(deviceData);
+  }
+
+  renderRow = deviceData => (
+    <TouchableHighlight
+      underlayColor={'white'}
+      activeOpacity={0.3}
+      onPress={() => this.handleDeviceSelected(deviceData)}
+    >
+      <View style={styles.deviceListItem}>
+        <Text>{deviceData.name}</Text>
+        {deviceData.id === this.props.selectedDevice.id &&
+          <Text style={styles.deviceListItemCheckmark}>✅</Text>
+        }
+      </View>
+    </TouchableHighlight>
+  );
+
+  renderSeparator = (sectionId, rowId) => {
+    return <View key={rowId} style={styles.listSeperator}/>;
+  }
+
   renderModal() {
     return (
       <Modal
@@ -44,11 +94,17 @@ class DevicesModal extends Component {
         onRequestClose={() => {alert('Modal has been closed.');}}
       >
         <View style={styles.modal}>
+          <ListView
+            enableEmptySections={true}
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow}
+            renderSeparator={this.renderSeparator}
+          />
+          {this.props.loading && <Text>Loading Devices...</Text>}
           <Button
             title={'Dismiss'}
             onPress={this.handleClose}
           />
-          <Text>{JSON.stringify(this.props.devices, null, 4)}</Text>
         </View>
       </Modal>
     );
@@ -89,7 +145,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchDevices: () => dispatch(actions.playlists.fetchDevices())
+    fetchDevices: () => dispatch(actions.devices.fetchDevices())
   };
 }
 

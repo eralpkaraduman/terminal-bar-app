@@ -38,6 +38,27 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flex: 1,
     width: undefined, height: undefined
+  },
+
+  deviceListItem: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    minHeight: 44
+  },
+
+  deviceListItemCheckmark: {
+    flex: 1,
+    textAlign: 'right'
+  },
+
+  listSeperator: {
+    flex:1,
+    backgroundColor: '#8E8E8E',
+    height: StyleSheet.hairlineWidth
   }
+
 });
 export default styles;
