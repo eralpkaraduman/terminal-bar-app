@@ -18,7 +18,7 @@ class DevicesModal extends Component {
   constructor(props, context) {
     super(props, context);
     const dataSource = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => true//(r1 !== r2)
+      rowHasChanged: (r1, r2) => true// this doesnt work (r1 !== r2)
     });
     this.state = {
       open: false,
@@ -146,8 +146,10 @@ class DevicesModal extends Component {
 
 function mapStateToProps(state) {
   return {
-   devices: selectors.selectDevices(state),
-   loading: selectors.selectDevicesLoading(state)
+    devices: selectors.selectDevices(state),
+    // devices: [],
+    loading: selectors.selectDevicesLoading(state)
+    // loading: true
   };
 }
 

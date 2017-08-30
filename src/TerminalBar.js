@@ -6,19 +6,17 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import URI from 'urijs';
 
-import spotifyApiMiddleware from './session/spotifyApiMiddleware';
-import reducers from './reducers';
-import actions from './actions';
-import selectors from './selectors';
+import spotifyApiMiddleware from './spotifyApiMiddleware';
+import reducer from './reducer';
+import * as actions from './actions';
+import * as selectors from './selectors';
 import styles from './styles';
 import HomeScreen from './screens/HomeScreen';
 import LogInScreen from './screens/LogInScreen';
 
-const preloadedState = {};
-
 let store = createStore(
-  reducers,
-  preloadedState,
+  reducer,
+  // preloadedState = {}
   applyMiddleware(thunk, spotifyApiMiddleware)
 );
 
@@ -31,7 +29,7 @@ let store = createStore(
 // move logic to render func of a Route subclass (AuthRoute ?)
 const routeIfLoggedIn = (Component) => () => {
   const state =  store.getState();
-  const isLoggedIn = selectors.session.isLoggedIn(state);
+  const isLoggedIn = selectors.isLoggedIn(state);
   if (!isLoggedIn) {
     return <Redirect push to="/login"/>;
   }
@@ -53,7 +51,7 @@ export default class TerminalBar extends React.Component {
   handleLinkEvent(event) {
     const uri = URI(event.url);
     if (uri.protocol() === 'terminal-bar' && uri.host() === 'spotify-authorize-callback') {
-      store.dispatch(actions.session.handleSpotifyAuthCallback(uri));
+      store.dispatch(actions.handleSpotifyAuthCallback(uri));
     }
   }
 

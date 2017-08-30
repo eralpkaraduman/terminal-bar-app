@@ -3,8 +3,8 @@ import { Text, View, Button, /*Linking*/ } from 'react-native';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 
-import actions from '../actions';
-import selectors from '../selectors';
+import * as actions from '../actions';
+import * as selectors from '../selectors';
 
 class LogInScreen extends React.Component {
   constructor(props, context) {
@@ -43,17 +43,17 @@ class LogInScreen extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    isLoggedIn: selectors.session.isLoggedIn(state),
-    spotifyLoginPending: selectors.session.isSpotifyLoginPending(state),
-    spotifyLoginCompleted: selectors.session.isSpotifyLoginCompleted(state),
-    spotifyLoginError: selectors.session.spotifyLoginError(state),
+    isLoggedIn: selectors.isLoggedIn(state),
+    spotifyLoginPending: selectors.isSpotifyLoginPending(state),
+    spotifyLoginCompleted: selectors.isSpotifyLoginCompleted(state),
+    spotifyLoginError: selectors.spotifyLoginError(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    initiateSpotifyLogin: () => dispatch(actions.session.initiateSpotifyLogin()),
-    loadStoredSpotifyCredentials: () => dispatch(actions.session.loadStoredSpotifyCredentials())
+    initiateSpotifyLogin: () => dispatch(actions.initiateSpotifyLogin()),
+    loadStoredSpotifyCredentials: () => dispatch(actions.loadStoredSpotifyCredentials())
   };
 }
 

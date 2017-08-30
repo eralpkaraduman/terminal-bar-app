@@ -3,10 +3,12 @@ import { Text, View, Button } from 'react-native';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 
-import actions from '../actions';
-import selectors from '../selectors';
-import playlists from '../playlists';
-const {Playlists, DevicesModal} = playlists.components;
+import * as actions from '../actions';
+import * as selectors from '../selectors';
+
+import Playlists from '../components/Playlists';
+import DevicesModal from '../components/DevicesModal';
+
 import styles from '/styles';
 
 class HomeScreen extends React.Component {
@@ -46,7 +48,7 @@ class HomeScreen extends React.Component {
       }
     }
   }
-  
+
 
   handleLogOutTapped = () => {
     this.props.logOut();
@@ -73,7 +75,7 @@ class HomeScreen extends React.Component {
   render() {
     return this.props.isLoggedIn ? (
       <View style={styles.screen}>
-        
+
         <View style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -97,11 +99,13 @@ class HomeScreen extends React.Component {
         <Playlists
           onPlaylistSelected={this.handlePlaylistSelected}
         />
+
         <DevicesModal
           onFetchDevices={this.props.fetchDevices}
           selectedDevice={this.state.selectedDevice}
           onChangedDevice={this.handleDevicesModalChangedDevice}
         />
+
       </View>
     ) : <Redirect push to="/login"/>; // TODO: remove, redux middleware should handle this
   }
@@ -109,18 +113,18 @@ class HomeScreen extends React.Component {
 
 function mapStateToProps(state) {
   return {
-   isLoggedIn: selectors.session.isLoggedIn(state), // TODO: remove, redux middleware should handle this
-   devices: selectors.playlists.selectDevices(state),
+   isLoggedIn: selectors.isLoggedIn(state), // TODO: remove, redux middleware should handle this
+   devices: selectors.selectDevices(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    logOut: () => dispatch(actions.session.logOut()),
-    fetchPlaylists: user => dispatch(actions.playlists.fetchPlaylists(user)),
-    fetchDevices: () => dispatch(actions.playlists.fetchDevices()),
+    logOut: () => dispatch(actions.logOut()),
+    fetchPlaylists: user => dispatch(actions.fetchPlaylists(user)),
+    fetchDevices: () => dispatch(actions.fetchDevices()),
     play: (contextUri, deviceId) => dispatch(
-      actions.playlists.play(contextUri, deviceId)
+      actions.play(contextUri, deviceId)
     )
   };
 }
