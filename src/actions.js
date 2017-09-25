@@ -1,11 +1,9 @@
 import URI from 'urijs';
 import SafariView from 'react-native-safari-view';
-import {AsyncStorage} from 'react-native';
-import R from 'ramda';
 
 import config from './config';
 import * as actionTypes from './actionTypes';
-
+import * as storage from './storage';
 
 export function initiateSpotifyLogin() {
   return dispatch => {
@@ -63,58 +61,19 @@ let dismissSubscription = SafariView.addEventListener(
 */
 
 export function logOut() {
-return dispatch => {
-  _clearSpotifyCredentials()
-    .then(() => dispatch({type: actionTypes.SPOTIFY_LOG_OUT}));
-};
+  return dispatch => {
+    storage.clearSpotifyCredentials()
+      .then(() => dispatch({type: actionTypes.SPOTIFY_LOG_OUT}));
+  };
 }
-
-///////////////
-// TODO: move to a manager
-const spotifyStorage = '@SPOTIFY';
-const spotify_access_token_key = `${spotifyStorage}:access_token`;
-const spotify_expires_in_key = `${spotifyStorage}:expires_in`;
-const spotify_date_received_key = `${spotifyStorage}:date_received`;
-function _storeSpotifyCredentials(credentials) {
-credentials = {...credentials, expires_in: credentials.expires_in.toString()};
-credentials = {...credentials, date_received: credentials.date_received.toString()};
-const {access_token, expires_in, date_received} = credentials;
-return Promise.all([
-  AsyncStorage.setItem(spotify_access_token_key, access_token),
-  AsyncStorage.setItem(spotify_expires_in_key, expires_in),
-  AsyncStorage.setItem(spotify_date_received_key, date_received),
-])
-.then(() => _readSpotifyCredentials());
-}
-function _readSpotifyCredentials() {
-return Promise.all([
-  AsyncStorage.getItem(spotify_access_token_key),
-  AsyncStorage.getItem(spotify_expires_in_key),
-  AsyncStorage.getItem(spotify_date_received_key)
-])
-.then(R.zipObj([
-  'access_token',
-  'expires_in',
-  'date_received'
-]))
-.then(credentials => ({...credentials, expires_in: parseInt(credentials.expires_in)}))
-.then(credentials => ({...credentials, date_received: parseInt(credentials.date_received)}));
-}
-function _clearSpotifyCredentials() {
-return Promise.all([
-  AsyncStorage.removeItem(spotify_access_token_key),
-  AsyncStorage.removeItem(spotify_expires_in_key),
-  AsyncStorage.removeItem(spotify_date_received_key)
-]);
-}
-///////////////
 
 export function loadStoredSpotifyCredentials() {
 return dispatch => {
-  _readSpotifyCredentials()
-  .then(({access_token, expires_in, date_received}) => dispatch({
+  storage.readSpotifyCredentials()
+  .then(({access_token, refresh_token, expires_in, date_received}) => dispatch({
     type: actionTypes.SPOTIFY_STORED_CREDENTIALS_LOADED,
     access_token,
+    refresh_token,
     expires_in,
     date_received
   }))
@@ -124,8 +83,9 @@ return dispatch => {
 
 function _onSpotifyLoginSuccess(fragmentData) {
   return dispatch => {
-    _storeSpotifyCredentials({
+    storage.storeSpotifyCredentials({
       access_token: fragmentData.access_token,
+      refresh_token: fragmentData.refresh_token,
       expires_in: fragmentData.expires_in,
       date_received: new Date().getTime()
     })
@@ -190,6 +150,23 @@ export function play(contextUri, deviceId) {
         context_uri: contextUri
       },
       method: 'PUT'
+    }
+  };
+}
+
+export function refreshSession(refreshToken) {
+  return {
+    type: actionTypes.REFRESH_SESSION,
+    spotify_api: {
+      path: '/api/token',
+      method: 'POST',
+      body: {
+        grant_type: 'authorization_code',
+        code: refreshToken,
+        redirect_uri: config.SPOTIFY_REDIRECT_URI,
+        client_id: config.SPOTIFY_CLIENT_ID,
+        client_secret: config.SPOTIFY_CLIENT_SECRET
+      }
     }
   };
 }

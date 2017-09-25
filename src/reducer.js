@@ -24,6 +24,7 @@ export default function(state = initialState, action) {
 
     case actionTypes.FETCH_PLAYLISTS: return reduceFetchPlaylists(state, action);
     case actionTypes.FETCH_DEVICES: return reduceFetchDevices(state, action);
+    case actionTypes.REFRESH_SESSION: return reduceRefreshSession(state, action);
 
     default: return state;
   }
@@ -37,11 +38,12 @@ const spotifyLogInIntitated = (state, action) => {
 };
 
 const spotifyLogInSucceeded = (state, action) => {
-    const {access_token, expires_in, date_received} = action;
+    const {access_token, refresh_token, expires_in, date_received} = action;
     return {
       ...state,
       spotifyLoginStatus: 'completed',
       spotifyToken: access_token,
+      refreshToken: refresh_token,
       spotifyTokenExpiresIn: expires_in,
       spotifyTokenDateReceived: date_received
     };
@@ -56,9 +58,10 @@ const spotifyLogInFailure = (state, action) => {
 };
 
 const spotifyStoredCredentialsLoaded = (state, action) => {
-  const {access_token, expires_in, date_received} = action;
+  const {access_token, refresh_token, expires_in, date_received} = action;
   return {...state,
     spotifyToken: access_token,
+    refreshToken: refresh_token,
     spotifyTokenExpiresIn: expires_in,
     spotifyTokenDateReceived: date_received
   };
@@ -120,3 +123,18 @@ const reduceFetchDevices = (state, action) => {
     };
   }
 };
+
+const reduceRefreshSession = (state, action) => {
+  const {status, response} = action;
+  if (status === 'success') {
+    return {...state,
+      spotifyTokenExpiresIn: response.expires_in,
+      spotifyTokenDateReceived: date_received, // calculate?
+      refreshToken: response.refresh_token,
+      accessToken: response.access_token
+    };
+  }
+  else {
+    return state;
+  }
+}

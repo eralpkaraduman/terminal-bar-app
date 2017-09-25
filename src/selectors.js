@@ -15,6 +15,7 @@ export const isLoggedIn = state => {
 };
 
 export const selectToken = state => state.spotifyToken;
+export const selectRefreshToken = state => state.refreshToken;
 export const selectTokenExpiresAt = state => {
   const expiresIn = state.spotifyTokenExpiresIn;
   const dateReceived = state.spotifyTokenDateReceived;

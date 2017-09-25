@@ -8,3 +8,4 @@ export const SPOTIFY_LOG_OUT = 'SPOTIFY_LOG_OUT'; // TODO: rename to SPOTIFY_CLE
 export const FETCH_PLAYLISTS = 'FETCH_PLAYLISTS';
 export const FETCH_DEVICES = 'FETCH_DEVICES';
 export const PLAY = 'PLAY';
+export const REFRESH_SESSION = 'REFRESH_SESSION';
