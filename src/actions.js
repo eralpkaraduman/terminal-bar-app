@@ -106,13 +106,15 @@ return {
 
 export function handleSpotifyAuthCallback(uri) {
   const fragmentData = uri.search(uri.fragment()).search(true);
+  console.log(uri);
   return dispatch => {
     _dismissSpotifyLoginUI().then(() => {
       if (fragmentData.error) {
         dispatch(_onSpotifyLoginFailure(fragmentData));
       }
       else {
-        dispatch(_onSpotifyLoginSuccess(fragmentData));
+        dispatch(
+          (fragmentData));
       }
     });
   };

@@ -129,7 +129,7 @@ const reduceRefreshSession = (state, action) => {
   if (status === 'success') {
     return {...state,
       spotifyTokenExpiresIn: response.expires_in,
-      spotifyTokenDateReceived: date_received, // calculate?
+      spotifyTokenDateReceived: new Date().getTime(),
       refreshToken: response.refresh_token,
       accessToken: response.access_token
     };
@@ -137,4 +137,4 @@ const reduceRefreshSession = (state, action) => {
   else {
     return state;
   }
-}
+};
